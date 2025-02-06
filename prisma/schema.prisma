@@ -24,5 +24,5 @@ model recomendations {
   idrecomendations Int     @id @default(autoincrement())
   title            String? @db.VarChar(25)
   description      String? @db.VarChar(200)
-  img              String? @db.VarChar(100)
+  img              String? @db.VarChar(255) // Cambiado a 255
 }

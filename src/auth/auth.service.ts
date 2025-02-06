@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
@@ -39,5 +39,32 @@ export class AuthService {
 
     return res.json({ message: 'Logged out successfully' });
   }
-}
 
+  // Función para registrar un usuario manualmente con email y contraseña
+  async createInitialAdmin() {
+    const email = 'rimero782@gmail.com';  // El email que deseas ingresar manualmente
+    const password = 'gato';   // La contraseña que deseas ingresar manualmente
+
+    // Verificar si el usuario ya existe
+    const existingUser = await this.prisma.admin.findUnique({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('User with this email already exists');
+    }
+
+    // Hashear la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Crear el nuevo usuario en la base de datos con el email y la contraseña hasheada
+    const newUser = await this.prisma.admin.create({
+      data: {
+        email,
+        password: hashedPassword,  // Contraseña hasheada
+      },
+    });
+
+    return { message: 'User created successfully', userId: newUser.idadmin };
+  }
+}
