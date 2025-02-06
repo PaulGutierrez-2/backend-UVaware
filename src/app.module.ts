@@ -29,8 +29,8 @@ export class AppModule {
   constructor(private readonly authService: AuthService) {}
 
   // Método para crear el admin inicial si es necesario
-  // async onModuleInit() {
-  //   await this.authService.createInitialAdmin();
-  // }
+  //async onModuleInit() {
+    //await this.authService.createInitialAdmin();
+  //}
 }
 

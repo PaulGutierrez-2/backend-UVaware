@@ -39,25 +39,30 @@ export class RecomendationsController {
 
   // Ruta para crear una recomendación
   @Post()
-  @UseInterceptors(FileInterceptor('image', {
-    storage: diskStorage({
-      destination: './uploads', // Define la carpeta de destino
-      filename: (req, file, callback) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        callback(null, uniqueSuffix + extname(file.originalname)); // Genera un nombre único para la imagen
-      },
-    }),
-  }))
-  async createRecomendation(
-    @Body() data: CreateRecomendationDto,
-    @UploadedFile() file: Express.Multer.File
-  ) {
-    if (!file) {
-      throw new Error('No file uploaded');
-    }
-    const imgUrl = await this.recomendationsService.uploadImage(file); // Usamos la función para obtener la URL de la imagen
-    return this.recomendationsService.createRecomendation({ ...data, img: imgUrl }, file); 
-  }
+@UseInterceptors(FileInterceptor('image', {
+  storage: diskStorage({
+    destination: './uploads',
+    filename: (req, file, callback) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      callback(null, uniqueSuffix + extname(file.originalname));
+    },
+  }),
+}))
+async createRecomendation(
+  //@UploadedFile() file: Express.Multer.File,
+  @Body() data: CreateRecomendationDto
+) {
+  /*if (!file) {
+    throw new Error('No file uploaded');
+  }*/
+
+  // Obtener la URL de la imagen
+  //const imgUrl = await this.recomendationsService.uploadImage(file);
+
+  // Crear la recomendación con la URL de la imagen
+  return this.recomendationsService.createRecomendation(data);
+}
+
   
   @Get()
   async getAllRecomendations() {

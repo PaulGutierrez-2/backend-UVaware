@@ -20,19 +20,16 @@ export class RecomendationsService {
   }
 
   // Método para crear una recomendación y almacenar la URL de la imagen
-  async createRecomendation(data: Omit<CreateRecomendationDto, 'idrecomendations'>, file: Express.Multer.File) {
-    // Obtener la URL completa de la imagen
-    const imgUrl = await this.uploadImage(file);
+async createRecomendation(data: Omit<CreateRecomendationDto, 'idrecomendations'>) {
+  return this.prisma.recomendations.create({
+    data: {
+      title: data.title,
+      description: data.description,
+      img: data.img, // Ya tenemos la URL de la imagen
+    } as Prisma.recomendationsUncheckedCreateInput, 
+  });
+}
 
-    // Crear la recomendación con la URL de la imagen
-    return this.prisma.recomendations.create({
-      data: {
-        title: data.title,
-        description: data.description,
-        img: imgUrl, // Guardamos la URL de la imagen
-      } as Prisma.recomendationsUncheckedCreateInput, 
-    });
-  }
 
   async getAllRecomendations() {
     return this.prisma.recomendations.findMany();
